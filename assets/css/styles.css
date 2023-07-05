@@ -152,7 +152,7 @@ body{
     align-items: center;
 }
 input[type="text"]{
-    background-color: #1D1B1B;
+    background-color: white;
     width: 420px;
     height: 48px;
     box-shadow: none;
@@ -160,16 +160,16 @@ input[type="text"]{
 }
 select{
     border-radius: 10px;
-    color:white;
+    color:black;
     width: 420px;
     height: 55px;
     font-family: regular;
     font-size:24px;
-    background-color: #1D1B1B;
-    color: white;
+    background-color: white;
+    color: black;
 }
 select option:checked{
-    color:white;
+    color:black;
 }
 input[type="email"]{
     background-color: #1D1B1B;

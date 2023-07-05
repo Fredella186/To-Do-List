@@ -1,3 +1,12 @@
+<?php   
+include "config/security.php";
+include "config/connection.php";
+    $user_id = $_SESSION['id'];
+    $email = $_SESSION['email'];
+    $username = $_SESSION['username'];
+    $profile_img = $_SESSION['profile_img'];
+ 
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,11 +19,11 @@
     <div class="left">
         <div class="profile">
             <div class="profile_picture">
-                <img src="assets\picture\profile.png">
+                <img  class="profile_img" src=" ./assets/picture/<?php echo $profile_img; ?>" alt="">
             </div>
             <div class="profile_name">
-                <p class="text1 white">Code Blaze</p>
-                <p class="text3 white">codeblaze@gmail.com</p>
+                <p class="text1 white"><?php echo $username; ?></p>
+                <p class="text3 white"><?php echo $email; ?></p>
             </div>
         </div>
         <div class="score">
@@ -31,57 +40,14 @@
         </div>
     </div>
     <div class="right">
+        <div>
         <div class="task_top">
             <p class="text4 white bold">Your task</p>
-            <a href="#task_add"><img src="assets\picture\task.png"></a>
+            <a href="add_task.php"><img src="assets\picture\task.png"></a>
         </div>
-        <div class="task_main">
-            <div class="task_picture">
-                <img src="assets\picture\study.png">
-            </div>
-            <div class="task_desc">
-                <p class="text1 white bold">Membuat To Do List</p>
-                <div class="task_time">
-                    <img src="assets\picture\time.png">
-                    <p class="text6 white regular">Jul 5</p>
-                </div>
-                <p class="text2 white regular">Penugasan code blaze yang mana...</p>
-            </div>
-            <div class="task_check">
-                <input type="checkbox" id="check" name="check">
-            </div>
+        <div class="task_active_list" id="active_tasks">
+            <p class="white">loading......</p>
         </div>
-        <div class="task_main">
-            <div class="task_picture">
-                <img src="assets\picture\study.png">
-            </div>
-            <div class="task_desc">
-                <p class="text1 white bold">Membuat To Do List</p>
-                <div class="task_time">
-                    <img src="assets\picture\time.png">
-                    <p class="text6 white regular">Jul 5</p>
-                </div>
-                <p class="text2 white regular">Penugasan code blaze yang mana...</p>
-            </div>
-            <div class="task_check">
-                <input type="checkbox" id="check" name="check">
-            </div>
-        </div>
-        <div class="task_main">
-            <div class="task_picture">
-                <img src="assets\picture\study.png">
-            </div>
-            <div class="task_desc">
-                <p class="text1 white bold">Membuat To Do List</p>
-                <div class="task_time">
-                    <img src="assets\picture\time.png">
-                    <p class="text6 white regular">Jul 5</p>
-                </div>
-                <p class="text2 white regular">Penugasan code blaze yang mana...</p>
-            </div>
-            <div class="task_check">
-                <input type="checkbox" id="check" name="check">
-            </div>
         </div>
         <div class="task_bottom">
             <p class="text4 white bold">Completed Task</p>
@@ -90,102 +56,20 @@
             <img src="assets\picture\arrow.png">
             </div>
         </div>
-        <div class="task_main">
-            <div class="task_picture">
-                <img src="assets\picture\study.png">
-            </div>
-            <div class="task_desc">
-                <p class="text1 white bold">Membuat To Do List</p>
-                <div class="task_time">
-                    <img src="assets\picture\time.png">
-                    <p class="text6 white regular">Jul 5</p>
-                </div>
-                <p class="text2 white regular">Penugasan code blaze yang mana...</p>
-            </div>
-            <div class="task_check">
-                <input type="checkbox" id="check" name="check" checked>
-            </div>
+        <div class="task_active_list" id="complete_tasks">
+            <p class="white">loading......</p>
         </div>
-        <div class="task_main">
-            <div class="task_picture">
-                <img src="assets\picture\study.png">
-            </div>
-            <div class="task_desc">
-                <p class="text1 white bold">Membuat To Do List</p>
-                <div class="task_time">
-                    <img src="assets\picture\time.png">
-                    <p class="text6 white regular">Jul 5</p>
-                </div>
-                <p class="text2 white regular">Penugasan code blaze yang mana...</p>
-            </div>
-            <div class="task_check">
-                <input type="checkbox" id="check" name="check" checked>
-            </div>
+        
         </div>
-        <div id="task_add">
-        <div class="close_popup">
-                    <a href="#pricing" class="popup_close">&times;</a>
-                </div>
-            <div id="task_add_content">
-                <div class="left">
-                    <p class="text4 white black">Add New Task</p>
-                    <div class="task_insert">
-                        <p class="text4 white bold">Title</p>
-                        <input type="text" id="title" name="title">
-                    </div>
-                    <div class="task_insert">
-                        <p class="text4 white bold">Description</p>
-                        <input type="text" id="desc" name="desc">
-                    </div>
-                    <div class="task_insert">
-                        <p class="text4 white bold">Category</p>
-                        <select name="category" id="category">
-                            <option value="meeting">Meeting</option>
-                            <option value="study">Study</option>
-                            <option value="medic">Medic</option>
-                            <option value="sport">Sport</option>
-                        </select>
-                    </div>
-                    <div class="task_insert">
-                        <p class="text4 white bold">Priority</p>
-                        <select name="priority" id="priority">
-                            <option value="high">High</option>
-                            <option value="medium">Medium</option>
-                            <option value="low">Low</option>
-                        </select>
-                    </div>
-                </div>
-            <div class="rigth">
-                <div class="task_reminder">
-                    <div class="date_time">
-                        <p class="text4 white bold">Due Date</p>
-                        <select name="dates" id="dates">
-                            <option value="today">Today, 10:00 PM</option>
-                        </select>
-                    </div>
-                    <div class="date_time">
-                        <p class="text4 white bold">Remainder</p>
-                        <select name="reminder" id="reminder">
-                            <option value="15">15 Minutes</option>
-                            <option value="30">30 Minutes</option>
-                            <option value="45">45 Minutes</option>
-                        </select>
-                    </div>
-                    <div class="date_time">
-                        <p class="text4 white bold">Repeat</p>
-                        <select name="repeat" id="repeat">
-                            <option value="1">1 Times</option>
-                            <option value="2">2 Times</option>
-                            <option value="3">3 Times</option>
-                            <option value="4">4 Times</option>
-                            <option value="5">5 Times</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="text4 black">CREATE TASK</button>
-                </div>
-            </div>
-            </div>
-        </div>
-    </div>
+        
+
+
+    <script src="assets/js/script.js"></script>
+    <script src="assets/js/jquery-3.7.0.js"></script>
+    <script>
+        $(document).ready(function(){
+            get_data();
+        });
+    </script>
 </body>
 </html>
