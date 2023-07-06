@@ -32,9 +32,11 @@ include "config/connection.php";
             </div>
             <div class="score_bar">
                 <p class="text5 white bold">Rocky</p>
-                <div class="score_persen">
-                <p class="text4 white bold">30 Task Completed</p>
-                <p class="text4 white bold">30%</p>
+                <div class="score_persen" id="completed_score">
+                    <p class="white">loading......</p>
+                </div>
+                <div class="score_persen" id="total_score">
+                    <p class="white">loading......</p>
                 </div>
             </div>
         </div>
@@ -69,6 +71,9 @@ include "config/connection.php";
     <script>
         $(document).ready(function(){
             get_data();
+            completed_task();
+            completed_score();
+            total_score();
         });
     </script>
 </body>

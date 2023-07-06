@@ -103,7 +103,9 @@ body{
 .score_persen{
     display: flex;
     flex-direction: row;
+    justify-content: flex-start;
     gap: 288px;
+    
 }
 .task_top{
     display: flex;
