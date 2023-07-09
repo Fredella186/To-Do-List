@@ -204,3 +204,24 @@ input[type="submit"]{
     align-items: center;
     margin-left:450px ;
 }
+
+
+
+/*style report*/
+
+.filter_body{
+    display: flex;
+    flex-direction: row;
+}
+.filter_date_main{
+    display: flex;
+    flex-direction: column;
+}
+.filter_button{
+    width: 420px;
+    height: 48px;
+    border-radius: 10px;
+    color:black;
+    font-family: bold;
+    font-size: 24px;
+}
