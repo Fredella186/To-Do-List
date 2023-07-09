@@ -45,7 +45,7 @@ include "config/connection.php";
         <div>
         <div class="task_top">
             <p class="text4 white bold">Your task</p>
-            <a href="add_task.php"><img src="assets\picture\task.png"></a>
+            <a href="#divAdd"><img src="assets\picture\task.png"></a>
         </div>
         <div class="task_active_list" id="active_tasks">
             <p class="white">loading......</p>
@@ -63,7 +63,8 @@ include "config/connection.php";
         </div>
         
         </div>
-        
+        <!-- Update Task -->
+        <?php include "add_task.php"; ?>
 
 
     <script src="assets/js/script.js"></script>
