@@ -151,7 +151,8 @@ else if($act == "loading"){
     while ($result = mysqli_fetch_array($query)) {
         $task_id = $result['id'];
         $task_title = $result['task_name'];
-        $task_deadline = $result['task_date'];
+        $task_deadline = $result['task_date'] == date('Y-m-d') ? 'Today' : date('d-m-Y', strtotime($result['task_date']));
+        $task_time = $result['task_time'] == "00:00:00" ? '' : date('H:i', strtotime($result['task_time']));
         $task_desc = $result['task_desc'];
         $category = $result['category_name'];
         $category_img = $result['category_img'];
@@ -163,12 +164,13 @@ else if($act == "loading"){
             <div class="task_desc">
                 <p class="text1 white bold"><?php echo $task_title; ?></p>
                 <div class="task_time">
-                    <img src="assets/picture/time.png">
+                    <p class="text6 white regular"><?php echo $task_time; ?></p>
                     <p class="text6 white regular"><?php echo $task_deadline; ?></p>
 
-                    <button type="button" id="edit_undone<?php echo $task_id; ?>" click="delete_task(<?php echo $task_id; ?>, 1)" name="delete">Delete</button>
+                    <button type="button" id="edit_undone<?php echo $task_id; ?>" onclick="delete_task(<?php echo $task_id; ?>, 1)" name="delete">Delete</button>
                     
-                    <button type="button" id="edit_task" onclick="editTask<?php echo $task_id; ?>'">Edit</button>
+                    <button type="button" id="edit_undone<?php echo $task_id; ?>" onclick="editTask(<?php echo $task_id; ?>)">Edit</button>
+
                 </div>
                 <p class="text2 white regular"><?php echo $task_desc;?></p>
             </div>
@@ -188,7 +190,8 @@ else if($act == "complete"){
     while ($result = mysqli_fetch_array($query)) {
         $task_id = $result['id'];
         $task_title = $result['task_name'];
-        $task_deadline = $result['task_date'];
+        $task_deadline = $result['task_date'] == date('Y-m-d') ? 'Today' : date('d-m-Y', strtotime($result['task_date']));
+        $task_time = $result['task_time'] == "00:00:00" ? '' : date('H:i', strtotime($result['task_time']));
         $task_desc = $result['task_desc'];
         $category = $result['category_name'];
         $category_img = $result['category_img'];
@@ -200,7 +203,7 @@ else if($act == "complete"){
             <div class="task_desc">
                 <p class="text1 white bold"><?php echo $task_title;?></p>
                 <div class="task_time">
-                    <img src="assets/picture/time.png">
+                    <p class="text6 white regular"><?php echo $task_time; ?></p>
                     <p class="text6 white regular"><?php echo $task_deadline;?></p>
                     <button type="button" onclick="delete_task(<?php echo $task_id; ?>)" name="delete">Delete</button>
                 </div>

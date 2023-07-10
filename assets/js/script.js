@@ -133,6 +133,11 @@ function edit_task(id) {
       // $("#button_edit_task").on("click", function () {
       //   update_task();
       // });
+
+      $('#button_edit_task').unbind('click');
+      $('#button_edit_task').on("click",function(){
+        update_task();
+      });
     },
   });
 }
@@ -149,7 +154,7 @@ function update_task() {
       priority_id: $("#edit_priority_id").val(),
       task_date: $("#edit_task_date").val(),
       task_time: $("#edit_task_time").val(),
-      id: $("#edit_task_id").val(),
+      id: task_id,
       act: "updateTask",
     },
     success: function () {
@@ -160,11 +165,7 @@ function update_task() {
   });
 }
 
-$(".close").on("click", function () {
-  $(".overlayUpdate").css("visibility", "hidden");
-  $(".overlayUpdate").css("opacity", 0);
-  window.location = "#";
-});
+
 
 function save_task() {
   $.ajax({

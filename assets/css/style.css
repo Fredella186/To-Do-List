@@ -225,3 +225,64 @@ input[type="submit"]{
     font-family: bold;
     font-size: 24px;
 }
+
+
+/*css untuk form*/
+/* Add Task */
+.overlayAdd {
+    display: flex;
+    justify-content: center;
+    z-index:1000;
+    background-color: black;
+    transition: opacity 500ms;
+    visibility: hidden;
+    opacity: 0;
+    margin-left:-100px;
+  }
+  
+  .overlayAdd:target {
+    visibility: visible;
+    opacity: 1;
+  }
+  
+  .wrapper_add_task {
+    border: 2px solid white;
+    padding: 20px;
+    border-radius: 10px;
+    width: fit-content;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+  }
+
+  
+  /* Update Task */
+.overlayUpdate {
+    z-index:1000;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    transition: opacity 500ms;
+    visibility: hidden;
+    opacity: 0;
+  }
+  
+  .overlayUpdate:target {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .wrapper_update_task {
+    border: 2px solid white;
+    padding: 20px;
+    border-radius: 10px;
+    width: fit-content;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+  }
