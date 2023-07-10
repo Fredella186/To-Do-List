@@ -42,7 +42,7 @@ else if( $act == "delete" ){
     $sql = "delete from tb_task where id='$id'";
     $query = mysqli_query($conn, $sql);
 }
-else if ($act === "saveTask"){
+else if ($act == "saveTask") {
     $task_name = $_POST['task_name'];
     $task_date = $_POST['task_date'];
     $task_desc = $_POST['task_desc'];
@@ -68,9 +68,8 @@ $run_query_check = mysqli_query($conn, $sql_insert) or die($sql_insert) ;
         <?php
         header("Refresh:0.1; url=home.php");
     }
-    
-}
-else if ($act == "editTask") {
+
+} else if ($act == "editTask") {
     $sql = "SELECT * FROM tb_task WHERE id = '$id'";
     $query = mysqli_query($conn, $sql);
     $result = mysqli_fetch_array($query);
@@ -79,23 +78,35 @@ else if ($act == "editTask") {
     $task_desc = $result['task_desc'];
     $task_date = $result['task_date'];
     $task_time = $result['task_time'];
-    // $priority_id = $result['priority_id'];
+    $priority_id = $result['priority_id'];
     $category_id = $result['category_id'];
-    // $reminder_id = $result['reminder_id'];
-    echo "|" . $task_name . "|" . $task_desc . "|" . $category_id . "|" . $priority_id . "|" . $task_date . "|" . $task_time . "|" . $task_id;
+    $reminder_id = $result['reminder_id'];
+    echo "|" . $task_name . "|" . $task_desc . "|" . $category_id . "|" . $priority_id . "|" . $task_date . "|" . $task_time . "|" . $task_id . "|" . $reminder_id;
 
 } else if ($act == "updateTask") {
-    $task_id = $_POST['id'];
     $task_name = $_POST['task_name'];
-    $task_desc = $_POST['task_desc'];
-    $category_id = $_POST['category_id'];
-    $priority_id = $_POST['priority_id'];
     $task_date = $_POST['task_date'];
+    $task_desc = $_POST['task_desc'];
     $task_time = $_POST['task_time'];
-    // $reminder_id = $_POST['reminder_id'];
-    // $status_id = $_POST['status_id'];
-    $sql_update = "UPDATE tb_task SET task_name = '$task_name', task_date = '$task_date', task_time = '$task_time', task_desc = '$task_desc', priority_id = '$priority_id', user_id = '$user_id', category_id = '$category_id' WHERE id = '$task_id'";
-    $run_query_check = mysqli_query($conn, $sql_update);
+    $priority_id = $_POST['priority_id'];
+    $user_id = $_SESSION['id'];
+    $category_id = $_POST['category_id'];
+    $reminder_id = $_POST['reminder_id'];
+
+    $sql_update = "update tb_task set task_name= '$task_name', task_date= '$task_date', task_desc='$task_desc', task_time= '$task_time', priority_id= '$priority_id', category_id= '$category_id' ,reminder_id= '$reminder_id', status_id=1 where id='$user_id'";
+    
+
+$run_query_check = mysqli_query($conn, $sql_update)  ;
+    if (!$run_query_check) {
+        die('Query error: ' . mysqli_error($conn));
+    } else {
+        ?>
+        <script>
+            alert("Edit Task Succeed");
+        </script>
+        <?php
+        header("Refresh:0.1; url=home.php");
+    }
 }
 /*Filter*/
 else if ($act == "filters") {
@@ -163,15 +174,14 @@ else if($act == "loading"){
             </div>
             <div class="task_desc">
                 <p class="text1 white bold"><?php echo $task_title; ?></p>
-                <div class="task_time">
+                < class="task_time">
                     <p class="text6 white regular"><?php echo $task_time; ?></p>
                     <p class="text6 white regular"><?php echo $task_deadline; ?></p>
 
                     <button type="button" id="edit_undone<?php echo $task_id; ?>" onclick="delete_task(<?php echo $task_id; ?>, 1)" name="delete">Delete</button>
-                    
-                    <button type="button" id="edit_undone<?php echo $task_id; ?>" onclick="editTask(<?php echo $task_id; ?>)">Edit</button>
+            
+                    <button type="button" id="edit_undone<?php echo $task_id; ?>" class="button_edit" value="Edit" onclick="edit_task(<?php echo $task_id; ?>)">Edit</button>
 
-                </div>
                 <p class="text2 white regular"><?php echo $task_desc;?></p>
             </div>
             <div class="task_check">

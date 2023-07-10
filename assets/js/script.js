@@ -112,30 +112,22 @@ function edit_task(id) {
       act: "editTask",
     },
     success: function (result) {
-      var data = result.split("|");
-      var id = $("#id").val(data[1]);
       $("#title_task").html("Edit Task");
       $("#tambah").val("Edit");
+      var data = result.split("|");
       $("#id").val(data[1]);
-      $("#edit_task_name").val(data[2]);
-      $("#edit_task_date").val(data[3]);
-      $("#edit_task_desc").val(data[4]);
-      $("#edit_priority_id").val(data[5]);
-      $("#edit_user_id").val(data[6]);
-      $("#edit_category_id").val(data[7]);
-      $("#edit_reminder_id").val(data[8]);
-      $("#edit_status_id").val(data[9]);
+      $("#task_name").val(data[2]);
+      $("#task_desc").val(data[3]);
+      $("#category_id").val(data[4]);
+      $("#priority_id").val(data[5]);
+      $("#task_date").val(data[6]);
+      $("#task_time").val(data[7]);
+      
       // id = $("#id").val(data[7]);
 
-      $(".overlayUpdate").css("visibility", "visible");
-      $(".overlayUpdate").css("opacity", 1);
-      // $("#button_edit_task").unbind("click");
-      // $("#button_edit_task").on("click", function () {
-      //   update_task();
-      // });
-
-      $('#button_edit_task').unbind('click');
-      $('#button_edit_task').on("click",function(){
+      
+      $('#tambah').unbind('click');
+      $('#tambah').on("click",function(){
         update_task();
       });
     },
@@ -148,13 +140,13 @@ function update_task() {
     url: "sv_task.php",
     method: "POST",
     data: {
-      task_name: $("#edit_task_name").val(),
-      task_desc: $("#edit_task_desc").val(),
-      category_id: $("#edit_category_id").val(),
-      priority_id: $("#edit_priority_id").val(),
-      task_date: $("#edit_task_date").val(),
-      task_time: $("#edit_task_time").val(),
-      id: task_id,
+      task_name: $("#task_name").val(),
+      task_desc: $("#task_desc").val(),
+      category_id: $("#category_id").val(),
+      priority_id: $("#priority_id").val(),
+      task_date: $("#task_date").val(),
+      task_time: $("#task_time").val(),
+      id: $("#task_id").val(),
       act: "updateTask",
     },
     success: function () {
@@ -165,7 +157,19 @@ function update_task() {
   });
 }
 
+function add_task(){
+  modal.style.display = "block";
+      $("#title_task").html("Add Task");
+      $("#id").val("");
+      $("#task_name").val("");
+      $("#task_date").val("");
+      $("#task_desc").val("");
+      $("#priority_id").val("title_priority");
+      $("#category_id").val("title_category");
+      $("#reminder_id").val("title_reminder");
+      $("#status_id").val("");
 
+}
 
 function save_task() {
   $.ajax({
@@ -178,18 +182,16 @@ function save_task() {
       priority_id: $("#priority_id").val(),
       task_date: $("#task_date").val(),
       task_time: $("#task_time").val(),
+      reminder_id: $("#reminder_id").val(),
       act: "saveTask",
     },
     success: function () {
       alert("Data berhasil disimpan!");
       get_data();
       completed_task();
-      window.location = "#";
     },
   });
 }
-  
-  
 
   //filter
 
