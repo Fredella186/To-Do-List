@@ -129,7 +129,7 @@ include "config/connection.php";
                         </select>
                     </div>
                     <br>
-                    <input type="submit" class="text4 white" onclick="save_task()" id="tambah">Add 
+                    <input type="submit" class="text4 white" onclick="save_task(this.value)" id="tambah" name="tambah" value="tambah">Add 
                 </div>
             </div>
         </div>
