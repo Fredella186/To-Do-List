@@ -60,6 +60,8 @@ function completed_task(){ //refresh completed tasks
 }
 
 function delete_task(id, type){
+  var conf = confirm("Apakah ingin menghapus?");
+    if(conf){
     $.ajax({
         url: 'sv_task.php',
         method: 'POST',
@@ -75,6 +77,7 @@ function delete_task(id, type){
             }
         }
     });
+    }
 }
 
 function completed_score(){
@@ -112,10 +115,11 @@ function edit_task(id) {
       act: "editTask",
     },
     success: function (result) {
+      $("#divAdd").css("visibility", "visible");
       $("#title_task").html("Edit Task");
       $("#tambah").val("Edit");
       var data = result.split("|");
-      $("#id").val(data[1]);
+      $("#task_id").val(data[1]);
       $("#task_name").val(data[2]);
       $("#task_desc").val(data[3]);
       $("#category_id").val(data[4]);
@@ -126,10 +130,10 @@ function edit_task(id) {
       // id = $("#id").val(data[7]);
 
       
-      $('#tambah').unbind('click');
-      $('#tambah').on("click",function(){
-        update_task();
-      });
+      // $('#tambah').unbind('click');
+      // $('#tambah').on("click",function(){
+      //   update_task();
+      // });
     },
   });
 }
@@ -153,6 +157,9 @@ function update_task() {
       alert("Data berhasil diubah!");
       get_data();
       completed_task();
+
+      $("#divAdd").css("visibility", "hidden");
+      window.scroll(0,0);
     },
   });
 }
@@ -171,7 +178,8 @@ function add_task(){
 
 }
 
-function save_task() {
+function save_task(act_button) {
+  if(act_button == "tambah"){
   $.ajax({
     url: "sv_task.php",
     method: "POST",
@@ -189,8 +197,12 @@ function save_task() {
       alert("Data berhasil disimpan!");
       get_data();
       completed_task();
+      $("#divAdd").css("visibility", "hidden");
     },
   });
+  }else{
+    update_task();
+  }
 }
 
   //filter
