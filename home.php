@@ -71,7 +71,7 @@ include "config/connection.php";
             <div class="left">
             <div class="close_add white"><a href="home.php">&times;</a></div>
                 <p class="text4 white black" id="title_task">Add New Task</p>
-                <td><input type="hidden" name="id" class="id form-control" id="id" value=""></td>
+                <td><input type="hidden" name="task_id" class="id form-control" id="task_   id" value=""></td>
                 <div class="task_insert">
                     <p class="text4 white bold" id="title_task"></p>
                     <input type="text" id="task_name" name="task_name" class="white" value="">
