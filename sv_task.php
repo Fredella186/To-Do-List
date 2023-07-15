@@ -15,29 +15,80 @@ else if($act == "not_done"){
     $query = mysqli_query($conn, $sql);
 }
 else if ($act == "completed_score") {
-    $sql = "SELECT COUNT(*) AS completed_score FROM tb_task WHERE  user_id='$user_id' AND status_id = 2 ";
+    $task_id = $_POST['task_id'];
+    $user_id = $_SESSION['id'];
+
+    $sql = "SELECT COUNT(*) AS total_score FROM tb_task WHERE user_id='$user_id' AND status_id = 2";
     $query = mysqli_query($conn, $sql);
-    while ($completedTasks = mysqli_fetch_array($query)){
+    $totalScore = mysqli_fetch_array($query);
+    $total_score = $totalScore['total_score'];
+
+    $sql_update = "UPDATE tb_user SET total_score = $total_score WHERE id='$user_id'";
+    $query_update = mysqli_query($conn, $sql_update);
+
+    if ($query_update) {
         ?>
         <div class="score_bar">
-            <div class="score_persen">
-                <p class="text4 white bold"><?php echo $completedTasks['completed_score']; ?> Task Completed</p>
-            </div>
+            <p class="text4 white bold"><?php echo $total_score; ?>XP</p>
         </div>
         <?php
+    } else {
+        echo "Error updating total score: " . mysqli_error($conn);
     }
 }
+
 else if ($act == "total_score") {
+    $task_id = $_POST['task_id'];
+    $user_id = $_SESSION['id'];
+
     $sql = "SELECT COUNT(*) * 10 AS total_score FROM tb_task WHERE user_id='$user_id' AND status_id = 2";
     $query = mysqli_query($conn, $sql);
-    while ($totalScore = mysqli_fetch_array($query)){
+    $totalScore = mysqli_fetch_array($query);
+    $xp = $totalScore['total_score'];
+
+    $sql_update = "UPDATE tb_user SET xp = $xp WHERE tb_user.id='$user_id'";
+    $query_update = mysqli_query($conn, $sql_update);
+
+    if ($query_update) {
         ?>
         <div class="score_bar">
-                <p class="text4 white bold"><?php echo $totalScore['total_score']; ?>XP</p>
+            <p class="text4 white bold"><?php echo $xp; ?>XP</p>
         </div>
         <?php
+    } else {
+        echo "Error updating XP: " . mysqli_error($conn);
     }
 }
+else if ($act == "pet_picture") {
+    $sql = "UPDATE tb_user
+    SET current_pet_phase = (
+        SELECT tb_phase.id
+        FROM tb_phase
+        LEFT JOIN tb_pet ON tb_phase.pet_id = tb_pet.id
+        WHERE tb_user.xp >= tb_phase.min_xp AND tb_user.xp <= tb_phase.max_xp
+        LIMIT 1     
+    )
+    WHERE id = '$user_id'";
+
+    $query = mysqli_query($conn, $sql);
+
+    $sql = "SELECT tb_phase.phase_img FROM tb_phase 
+            JOIN tb_user ON tb_user.current_pet_phase = tb_phase.id 
+            JOIN tb_pet ON tb_pet.id = tb_user.pet_id 
+            WHERE tb_user.xp >= tb_phase.min_xp AND tb_user.xp <= tb_phase.max_xp AND tb_user.id = '$user_id'";
+
+    $query = mysqli_query($conn, $sql);
+    $update_pet = mysqli_fetch_array($query);
+    $pet_image = $update_pet['phase_img'];
+
+    ?>
+    <div>
+        <img class="pet_image" id="pet_image" src="assets/picture/<?php echo $pet_image; ?>" />
+    </div>
+    <?php
+}
+
+
 else if( $act == "delete" ){
     $sql = "delete from tb_task where id='$id'";
     $query = mysqli_query($conn, $sql);
@@ -81,7 +132,7 @@ $run_query_check = mysqli_query($conn, $sql_insert) or die($sql_insert) ;
     $priority_id = $result['priority_id'];
     $category_id = $result['category_id'];
     $reminder_id = $result['reminder_id'];
-    echo "|" . $task_name . "|" . $task_desc . "|" . $category_id . "|" . $priority_id . "|" . $task_date . "|" . $task_time . "|" . $task_id . "|" . $reminder_id;
+    echo "|" . $task_id ."|" . $task_name . "|" . $task_desc . "|" . $category_id . "|" . $priority_id . "|" . $task_date . "|" . $task_time . "|" . $task_id . "|" . $reminder_id;
 
 } else if ($act == "updateTask") {
     $task_name = $_POST['task_name'];
@@ -92,8 +143,9 @@ $run_query_check = mysqli_query($conn, $sql_insert) or die($sql_insert) ;
     $user_id = $_SESSION['id'];
     $category_id = $_POST['category_id'];
     $reminder_id = $_POST['reminder_id'];
+    $task_id = $_POST['task_id'];
 
-    $sql_update = "update tb_task set task_name= '$task_name', task_date= '$task_date', task_desc='$task_desc', task_time= '$task_time', priority_id= '$priority_id', category_id= '$category_id' ,reminder_id= '$reminder_id', status_id=1 where id='$user_id'";
+    $sql_update = "update tb_task set task_name= '$task_name', task_date= '$task_date', task_desc='$task_desc', task_time= '$task_time', priority_id= '$priority_id', category_id= '$category_id' ,reminder_id= '$reminder_id', status_id=1 where id='$task_id'";
     
 
 $run_query_check = mysqli_query($conn, $sql_update)  ;
@@ -155,7 +207,6 @@ else if ($act == "filters") {
         <?php
     }
 }
-
 else if($act == "loading"){
     $sql = "select t.*, c.category_name, c.category_img from tb_task t left join tb_category c on t.category_id = c.id where user_id='$user_id' and status_id=1 ";
     $query = mysqli_query($conn, $sql);
@@ -174,15 +225,13 @@ else if($act == "loading"){
             </div>
             <div class="task_desc">
                 <p class="text1 white bold"><?php echo $task_title; ?></p>
-                < class="task_time">
                     <p class="text6 white regular"><?php echo $task_time; ?></p>
                     <p class="text6 white regular"><?php echo $task_deadline; ?></p>
+                    <p class="text2 white regular"><?php echo $task_desc;?></p>
 
                     <button type="button" id="edit_undone<?php echo $task_id; ?>" onclick="delete_task(<?php echo $task_id; ?>, 1)" name="delete">Delete</button>
             
                     <button type="button" id="edit_undone<?php echo $task_id; ?>" class="button_edit" value="Edit" onclick="edit_task(<?php echo $task_id; ?>)">Edit</button>
-
-                <p class="text2 white regular"><?php echo $task_desc;?></p>
             </div>
             <div class="task_check">
                 <input type="checkbox" id="undone<?php echo $task_id; ?>" onclick="check_task(<?php echo $task_id; ?>)"/>
