@@ -25,17 +25,19 @@ include "config/connection.php";
             <div class="profile_name">
                 <p class="text1 white"><?php echo $username; ?></p>
                 <p class="text3 white"><?php echo $email; ?></p>
-            </div>
-            <button type="button" id="edit_profile_buttons" class="edit_profile_buttons" value="Edit" onclick="edit_profile">Edit</button>
-            <button name="edit_profile_button" id="edit_profile_button" onclick="window.location.href = 'edit_profile.php'">Edit Profile</button>
+</div>
+            <button name="edit_profile_button" id="edit_profile_button"><a href="edit_profile.php">Edit Profile</a></button>
+            
 
         </div>
         <div class="score">
             <div class="pet_picture" id="pet_picture">
             <p class="white">loading......</p>
             </div>
+            <div class="pet_name white bold text5" id="pet_name" >
+            <p class="white">loading......</p>
+            </div>
             <div class="score_bar">
-                <p class="text5 white bold">Rocky</p>
                 <div class="score_persen" id="completed_score">
                     <p class="white">loading......</p>
                 </div>
@@ -49,10 +51,8 @@ include "config/connection.php";
         <div>
         <div class="task_top">
             <p class="text4 white bold">Your task</p>
-            <button onclick="window.location.href = 'add_task.php';">
-    <img src="assets/picture/task.png" alt="Add Task">
-</button>
-
+            <a href="add_task.php"><button>Add</button></a>
+            <a href="report.php"><button>Filter</button></a>
         </div>
         <div class="task_active_list" id="active_tasks">
             <p class="white">loading......</p>
@@ -84,6 +84,7 @@ include "config/connection.php";
             completed_score();
             total_score();
             pet_picture();
+            pet_name();
         });
     </script>
 

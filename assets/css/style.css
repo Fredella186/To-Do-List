@@ -50,6 +50,9 @@ body{
 .regular{
     font-family: regular;
 }
+.margin{
+    margin-bottom: 10px;
+}
 .black{
     font-family: blacks;
 }
@@ -98,18 +101,17 @@ body{
     margin-top: 120px;
 }
 .score_bar{
-    margin-left: 120px;
+    margin-right:1000 px;
+    display: flex;
+    flex-direction: row-reverse;
 }
 .score_persen{
-    display: flex;
-    flex-direction: row;
-    gap: 288px;
+
 }
 .task_top{
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 355px;
     margin-bottom: 10px;
 }
 .task_main{
@@ -226,9 +228,21 @@ input[type="submit"]{
     font-size: 24px;
 }
 
-
-
-    /* CSS untuk membuat overlay tumpang tindih dengan latar belakang transparan */
     
+.task_check {
+    display: flex;
+    flex-direction: column;
+
+}
 
 
+/*profile*/
+
+.profile{
+    margin-bottom: 10px;
+}
+.main_profile_content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

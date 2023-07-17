@@ -5,26 +5,12 @@ include "config/connection.php";
 $user_id = $_SESSION['id'];
 $act = $_POST['act']; // membedakan prosesnya
 $id = $_POST['id'] ?? '';
-$user_id = $_SESSION['id'];
-$username = $_POST['username'];
-$fullname = $_POST['fullname'];
-$email = $_POST['email'];
-$old_password = md5($_POST['old_password']);
-$new_password = $_POST['new_password'];
+?>
 
+<?php
 if ($act == "editProfile") {
-    $sql = "select * from tb_user where id='$user_id'";
-    $query = mysqli_query($conn,$sql);
-    $result = mysqli_fetch_array($query);
-
-    $user_id = $id;
-    $username = $result['username'];
-    $fullname = $result['fullname'];
-    $email = $result['email'];
-
-    echo "|" . $username . "|" . $fullname . "|" . $email . "|";
-}
-else if($act == "saveProfile"){
+    $user_id = $_REQUEST['id'];
+    $profile_img = ''; // Inisialisasi variabel dengan nilai default kosong
 
     if (isset($_FILES['profile_img']) && $_FILES['profile_img']['size'] > 0) {
         // User mengunggah file baru
@@ -33,7 +19,7 @@ else if($act == "saveProfile"){
         $file_tmp = $file['tmp_name'];
 
         // Folder tujuan
-        $folder = './assets/images/profile/';
+        $folder = './assets/';
 
         // Pindahkan file ke folder tujuan
         if (move_uploaded_file($file_tmp, $folder . $file_name)) {
@@ -52,22 +38,30 @@ else if($act == "saveProfile"){
         $profile_img = $resultProfile['profile_img'];
     }
 
-
-    $sqlcheckpass = "SELECT password, pet_id from tb_user WHERE id = '$user_id'";
-    $query = mysqli_query($conn, $sqlcheckpass);
-    $result = mysqli_fetch_array($query);
-    $pass = $result['password']; //bentuknya MD5
-    $current_pet_id = $result['pet_id'];
-    $profile_img = $result['profile_img']
+    $username = $_POST['username'];
+    $fullname = $_POST['fullname'];
+    $email = $_POST['email'];
+    $pet_id = $_POST['pet_id'];
+    if ($pet_id == "") {
+        $sqlPET = "SELECT pet_id FROM tb_user WHERE id = '$user_id'";
+        $PETquery = mysqli_query($conn, $sqlPET);
+        $resultPET = mysqli_fetch_array($PETquery);
+        $pet_id = $resultPET['pet_id'];
+    }
+    $password = $_POST['password'];
+    $new_password = $_POST['new_password'];
 
     $action_type = "updateProfile";
     $addition_command = "";
     $exec = true;
-    
+
     if ($new_password != "") {
-        if ($old_password == $pass) {
+        $sqlOldPassword = "SELECT password FROM tb_user WHERE id = '$user_id'";
+        $queryOldPassword = mysqli_query($conn, $sqlOldPassword);
+        $resultOldPassword = mysqli_fetch_array($queryOldPassword);
+        if ($password == $resultOldPassword['password']) {
             $new_password = md5($new_password);
-            $addition_command .= ", password = '$new_password'";
+            $addition_command = ", password = '$new_password'";
             $action_type = "updateProfilePassword";
         } else {
             $message = "password lama Anda salah!";
@@ -77,13 +71,25 @@ else if($act == "saveProfile"){
     }
 
     if ($exec) {
-        $sql = "update tb_user set fullname='$fullname', profile_img='$profile_img', email='$email' $addition_command where id='$user_id'";
-        $query = mysqli_query($conn,$sql) or die($sql);
+        $sql_update = "UPDATE tb_user SET 
+                                profile_img = '$profile_img', 
+                                fullname = '$fullname', 
+                                email = '$email',
+                                pet_id = '$pet_id'  
+                                $addition_command 
+                                WHERE id = '$user_id'";
+        $run_query_check = mysqli_query($conn, $sql_update) or die($sql_update);
 
+        $actionType = "DataBerhasil";
         $message = "Data Berhasil diubah";
+
+
+
     }
 
     echo "|" . $action_type . "|" . $message . "|";
+    ?>
 
-}
-?>
+    <?php
+} 
+    

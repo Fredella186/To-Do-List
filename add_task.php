@@ -16,7 +16,7 @@ include "config/connection.php";
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-<div id="divAdd" class="overlayAdd" style="visibility:hidden;">
+<div id="divAdd" class="overlayAdd" ;>
         <div id="wrapper_add_task">
             <div class="left">
             
@@ -88,4 +88,6 @@ include "config/connection.php";
         </div>
     </div>
 </body>
+<script src="./assets/js/jquery-3.7.0.js"></script>
+<script src="./assets/js/script.js"></script>
 </html>

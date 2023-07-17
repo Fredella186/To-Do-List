@@ -202,61 +202,6 @@ function save_task(act_button) {
   }
 
 
-//edit_profile(show)
-function edit_profile(id) {
-  $.ajax({
-      url: "sv_task.php",
-      method: "POST",
-      data: {
-          id: id,
-          act: "editProfile",
-      },
-      success: function (result) {
-          $("#divAdd").css("visibility", "visible");
-          var data = result.split("|");
-          $("#user_id").val(data[1]);
-          $("#img_profile").attr("src", "./assets/picture/" + data[2]);
-          $("#username").val(data[3]);
-          $("#email").val(data[4]);
-          $("#password").val(data[5]);
-          $("#pet_id").val(data[6]);
-      },
-  });
-}
-
-function save_profile() {
-  // Retrieve the form values
-  var id = $("#user_id").val();
-  var profile_img = $("#img_profile").val();
-  var username = $("#username").val();
-  var email = $("#email").val();
-  var password = $("#password").val();
-  var pet_id = $("#pet_id").val();
-
-  // Perform AJAX request to save the profile
-  $.ajax({
-      url: "sv_task.php",
-      method: "POST",
-      data: {
-          id: id,
-          profile_img: profile_img,
-          username: username,
-          email: email,
-          password: password,
-          pet_id: pet_id,
-          act: "saveProfile",
-      },
-      success: function (result) {
-          alert("Data berhasil diubah!");
-          get_data();
-          completed_task();
-    
-          $("#divAdd").css("visibility", "hidden");
-          window.scroll(0,0);
-      },
-  });
-}
-
 
 function pet_picture(){
   // console.log("tes");
@@ -268,6 +213,22 @@ function pet_picture(){
     },
     success: function(result){
       $("#pet_picture").html(result);
+      pet_picture();
+      pet_name();
+    }
+  });
+}
+
+function pet_name(){
+  // console.log("tes");
+  $.ajax({
+    url: 'sv_task.php',
+    method: 'POST',
+    data: {
+      act: 'pet_name',
+    },
+    success: function(result){
+      $("#pet_name").html(result);
     }
   });
 }
@@ -299,3 +260,6 @@ function completed_score(task_id){
       }
   });
 }
+
+
+
