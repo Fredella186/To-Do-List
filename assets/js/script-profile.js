@@ -17,6 +17,8 @@ function edit_profile(id) {
 }
 
 function save_profile() {
+
+
     $.ajax({
         url: "sv_profile.php",
         method: "POST",
@@ -44,3 +46,5 @@ function save_profile() {
           },
         });
       }
+
+

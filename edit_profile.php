@@ -31,9 +31,10 @@ $result = mysqli_fetch_array($query);
     <div class="profile_picture" id="profile_picture">
         <a href="profile.php"><img src="assets/picture/<?php echo $profile_img ?>" alt="Avatar" /></a>
     </div>
+    <!--Untuk edit foto profile-->
     <form id="upload_form" enctype="multipart/form-data">
-        <input type="file" name="profile_image" id="profile_image" accept="image/*">
-        <button type="button">Upload</button>
+        <br>
+        <input type="file" name="profile_image" id="profile_image">
     </form>
     </div>
     <div class="profile" id="profile">
