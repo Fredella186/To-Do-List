@@ -3,13 +3,13 @@ include "config/security.php";
 include "config/connection.php";
 
 $user_id = $_SESSION['id'];
-$act = $_POST['act'] ?? '';
+$act = $_POST['act']; // membedakan prosesnya
 $id = $_POST['id'] ?? '';
-$username = $_POST['username'] ?? '';
-$fullname = $_POST['fullname'] ?? '';
-$email = $_POST['email'] ?? '';
-$old_password = $_POST['old_password'] ?? '';
-$new_password = $_POST['new_password'] ?? '';
+$username = $_POST['username'];
+$fullname = $_POST['fullname'];
+$email = $_POST['email'];
+$old_password = md5($_POST['old_password']);
+$new_password = $_POST['new_password'];
 
 if ($act == "editProfile") {
     $sql = "SELECT * FROM tb_user WHERE id='$user_id'";
@@ -20,29 +20,41 @@ if ($act == "editProfile") {
     $fullname = $result['fullname'];
     $email = $result['email'];
 
-    echo "|" . $username . "|" . $fullname . "|" . $email . "|";
+    $response = array(
+        'action_type' => 'editProfile',
+        'username' => $username,
+        'fullname' => $fullname,
+        'email' => $email
+    );
+
+    echo json_encode($response);
 } else if ($act == "saveProfile") {
-    $profile_img = ''; // initialize variable with an empty value
+    $user_id = $_REQUEST['id'];
+    $profile_img = ''; // inisialisasi variable dengan nilai default kosong
 
     if (isset($_FILES['profile_img']) && $_FILES['profile_img']['size'] > 0) {
-        // User uploads a new file
+        // user mengunggah file baru
         $file = $_FILES['profile_img'];
         $file_name = md5($file['name']) . '_' . date('y-m-d') . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
         $file_tmp = $file['tmp_name'];
 
-        // Destination folder
+        //folder tujuan
         $folder = './assets/picture/';
 
-        // Move the file to the destination folder
+        //pindahkan file ke dalam folder tujuan
         if (move_uploaded_file($file_tmp, $folder . $file_name)) {
-            // File successfully uploaded to the destination folder
+            // File berhasil diunggah ke folder tujuan.
             $profile_img = $file_name;
         } else {
-            echo 'Failed to upload the file.';
-            exit; // Exit the script as file upload failed
+            $response = array(
+                'action_type' => 'error',
+                'message' => 'Gagal mengunggah file.'
+            );
+            echo json_encode($response);
+            exit; // Keluar dari script karena gagal mengunggah file.
         }
     } else {
-        // User doesn't upload a new file, use the data from the database
+        // User tidak mengunggah file baru, gunakan data yang ada di database
         $sqlProfile = "SELECT profile_img FROM tb_user WHERE id='$user_id'";
         $queryProfile = mysqli_query($conn, $sqlProfile);
         $resultProfile = mysqli_fetch_array($queryProfile);
@@ -52,22 +64,25 @@ if ($act == "editProfile") {
     $sqlcheckpass = "SELECT password, pet_id FROM tb_user WHERE id = '$user_id'";
     $query = mysqli_query($conn, $sqlcheckpass);
     $result = mysqli_fetch_array($query);
-    $pass = $result['password']; // MD5 hashed password
+    $pass = $result['password']; // bentuknya MD5
     $current_pet_id = $result['pet_id'];
 
     $action_type = "updateProfile";
     $addition_command = "";
     $exec = true;
 
-    if (!empty($new_password)) {
-        if (md5($old_password) == $pass) {
+    if ($new_password != "") {
+        if ($old_password == $pass) {
             $new_password = md5($new_password);
             $addition_command .= ", password = '$new_password'";
             $action_type = "updateProfilePassword";
         } else {
-            $message = "Your old password is incorrect!";
-            $action_type = "wrongPassword";
-            $exec = false;
+            $response = array(
+                'action_type' => 'error',
+                'message' => 'password lama Anda salah!'
+            );
+            echo json_encode($response);
+            exit;
         }
     }
 
@@ -75,9 +90,12 @@ if ($act == "editProfile") {
         $sql = "UPDATE tb_user SET fullname='$fullname', profile_img='$profile_img', email='$email' $addition_command WHERE id='$user_id'";
         $query = mysqli_query($conn, $sql) or die($sql);
 
-        $message = "Data has been successfully updated";
-    }
+        $response = array(
+            'action_type' => $action_type,
+            'message' => 'Data Berhasil diubah'
+        );
 
-    echo "|" . $action_type . "|" . $message . "|";
+        echo json_encode($response);
+    }
 }
 ?>

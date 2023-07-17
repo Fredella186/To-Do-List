@@ -1,21 +1,18 @@
 function edit_profile(id) {
   $.ajax({
-    url: "sv_profile.php",
-    method: "POST",
-    data: {
-      id: id,
-      act: "editProfile",
-    },
-    success: function(result) {
-      try {
-        var data = JSON.parse(result);
-        $("#username").val(data[1]);
-        $("#fullname").val(data[2]);
-        $("#email").val(data[3]);
-      } catch (error) {
-        console.error("Error parsing JSON:", error);
+      url: "sv_profile.php",
+      method: "POST",
+      data: {
+          id: id,
+          act: "editProfile",
+      },
+      success: function (result) {
+          var data = result.split("|");
+
+          $("#username").val(data[1]);
+          $("#fullname").val(data[2]);
+          $("#email").val(data[3]);
       }
-    },
   });
 }
 
@@ -36,27 +33,22 @@ function save_profile() {
   form_data.append("id", $("#user_id").val());
   form_data.append("act", "saveProfile");
 
-  uploadProfileImage(form_data);
-}
-
-function uploadProfileImage(form_data) {
   $.ajax({
     url: "sv_profile.php",
     method: "POST",
     contentType: false,
     processData: false,
     data: form_data,
-    success: function(response) {
-      if (response.includes('File berhasil diunggah ke folder tujuan.')) {
-        var file_path = response.split(':')[1].trim();
-        $('#current_profile_img').attr('src', file_path);
+    success: function(result) {
+      if (result.includes('File berhasil diunggah ke folder tujuan.')) {
+        $('#current_profile_img').attr('src', result.file_path);
         alert('Foto profil berhasil diunggah!');
       } else {
         try {
-          var data = JSON.parse(response);
+          var data = JSON.parse(result);
           var actionType = data[1];
           alert(data[2]);
-
+    
           if (actionType == "updateProfilePassword") {
             window.location = "logout.php";
           } else if (actionType == "wrongPassword") {
@@ -68,8 +60,32 @@ function uploadProfileImage(form_data) {
         }
       }
     },
+    
     error: function() {
       $("#err").html("Terjadi kesalahan pada server.").fadeIn();
     },
+  });
+}
+
+
+function uploadProfileImage(form_data) {
+  $.ajax({
+    url: "sv_profile.php",
+    method: "POST",
+    contentType: false,
+    processData: false,
+    data: form_data,
+    success: function(response) {
+      var data = JSON.parse(response);
+      if (data.success) {
+        $('#current_profile_img').attr('src', data.file_path);
+        alert('Foto profil berhasil diunggah!');
+      } else {
+        $('#err').html('Terjadi kesalahan saat mengunggah foto profil.').fadeIn();
+      }
+    },
+    error: function() {
+      $('#err').html('Terjadi kesalahan pada server.').fadeIn();
+    }
   });
 }
