@@ -50,6 +50,7 @@ function save_profile() {
         } else {
           var actionType = data.action_type;
           alert(data.message);
+          window.location = "edit_profile.php";
 
           if (actionType == "updateProfilePassword") {
             window.location = "logout.php";

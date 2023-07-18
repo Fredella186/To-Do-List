@@ -64,6 +64,7 @@ if ($act == "editProfile") {
         $profile_img = $resultProfile['profile_img'];
     }
 
+
     $sqlcheckpass = "SELECT password, pet_id FROM tb_user WHERE id = '$user_id'";
     $query = mysqli_query($conn, $sqlcheckpass);
     $result = mysqli_fetch_array($query);

@@ -4,7 +4,7 @@ include "config/connection.php";
 $user_id = $_SESSION['id'];
 $email = $_SESSION['email'];
 $username = $_SESSION['username'];
-$profile_img = $_SESSION['profile_img'];
+
 
 $sql = "select * from tb_user where id = '$user_id'";
 $query = mysqli_query($conn, $sql);
@@ -29,7 +29,7 @@ $result = mysqli_fetch_array($query);
     </div>
     <div class="change_profile_picture" id="change_profile_picture">
     <div class="profile_picture" id="profile_picture">
-        <img id="current_profile_img" src="assets/picture/<?php echo $profile_img ?>" alt="Avatar" />
+        <img id="current_profile_img" src="assets/picture/<?php echo $result['profile_img'] ?>" alt="Avatar" />
     </div>
     <!--Untuk edit foto profile-->
     <form id="upload_form" enctype="multipart/form-data">

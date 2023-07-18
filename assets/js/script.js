@@ -11,6 +11,8 @@ function check_task(task_id){
             completed_task();
             completed_score();
             total_score();
+            pet_name();
+            pet_picture();
         }
     });
 }
