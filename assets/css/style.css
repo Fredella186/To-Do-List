@@ -246,3 +246,7 @@ input[type="submit"]{
     flex-direction: column;
     justify-content: center;
 }
+
+.your_task{
+    margin-right: 300px;
+}

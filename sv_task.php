@@ -261,10 +261,10 @@ else if($act == "loading"){
             </div>
             <div class="task_check">
                 <input type="checkbox" id="undone<?php echo $task_id; ?>" onclick="check_task(<?php echo $task_id; ?>)"/>
-                <button type="button" id="edit_undone<?php echo $task_id; ?>" onclick="delete_task(<?php echo $task_id; ?>, 1)" name="delete">Delete</button>
-                <button type="button" id="edit_undone<?php echo $task_id; ?>" class="button_edit" value="Edit" onclick="edit_task(<?php echo $task_id; ?>)">Edit</button>
-                
             </div>
+            <button type="button" id="edit_undone<?php echo $task_id; ?>" onclick="delete_task(<?php echo $task_id; ?>, 1)" name="delete">Delete</button>
+            <button type="button" id="edit_undone<?php echo $task_id; ?>" class="button_edit" value="Edit" onclick="edit_task(<?php echo $task_id; ?>)">Edit</button>
+            
         </div>
         
 
@@ -300,8 +300,8 @@ else if($act == "complete"){
             </div>
             <div class="task_check">
                 <input type="checkbox" id="done<?php echo $task_id; ?>" onclick="uncheck_task(<?php echo $task_id; ?>)" checked/>
-                <button type="button" onclick="delete_task(<?php echo $task_id; ?>)" name="delete">Delete</button>
             </div>
+            <button type="button" onclick="delete_task(<?php echo $task_id; ?>)" name="delete">Delete</button>
         </div>
 <?php
     }

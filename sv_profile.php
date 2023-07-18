@@ -10,6 +10,7 @@ $fullname = $_POST['fullname'];
 $email = $_POST['email'];
 $old_password = md5($_POST['old_password']);
 $new_password = $_POST['new_password'];
+$pet_id = $_POST['pet_id'];
 
 if ($act == "editProfile") {
     $sql = "SELECT * FROM tb_user WHERE id='$user_id'";
@@ -19,13 +20,15 @@ if ($act == "editProfile") {
     $username = $result['username'];
     $fullname = $result['fullname'];
     $email = $result['email'];
+    $pet_id = $result['pet_id'];
 
-    $response = array(
+    $response = [
         'action_type' => 'editProfile',
         'username' => $username,
         'fullname' => $fullname,
-        'email' => $email
-    );
+        'email' => $email,
+        'pet_id' => $pet_id
+    ];
 
     echo json_encode($response);
 } else if ($act == "saveProfile") {
@@ -46,10 +49,10 @@ if ($act == "editProfile") {
             // File berhasil diunggah ke folder tujuan.
             $profile_img = $file_name;
         } else {
-            $response = array(
+            $response = [
                 'action_type' => 'error',
                 'message' => 'Gagal mengunggah file.'
-            );
+            ];
             echo json_encode($response);
             exit; // Keluar dari script karena gagal mengunggah file.
         }
@@ -71,29 +74,36 @@ if ($act == "editProfile") {
     $addition_command = "";
     $exec = true;
 
+    if (empty($pet_id)) {
+        $sqlpet = "SELECT pet_id FROM tb_user WHERE id = '$user_id'";
+        $petquery = mysqli_query($conn, $sqlpet);
+        $resultpet = mysqli_fetch_array($petquery);
+        $pet_id = $resultpet['pet_id'];
+    }
+
     if ($new_password != "") {
         if ($old_password == $pass) {
             $new_password = md5($new_password);
             $addition_command .= ", password = '$new_password'";
             $action_type = "updateProfilePassword";
         } else {
-            $response = array(
+            $response = [
                 'action_type' => 'error',
-                'message' => 'password lama Anda salah!'
-            );
+                'message' => 'Password lama Anda salah!'
+            ];
             echo json_encode($response);
             exit;
         }
     }
 
     if ($exec) {
-        $sql = "UPDATE tb_user SET fullname='$fullname', profile_img='$profile_img', email='$email' $addition_command WHERE id='$user_id'";
+        $sql = "UPDATE tb_user SET fullname='$fullname', profile_img='$profile_img', email='$email', pet_id='$pet_id' $addition_command WHERE id='$user_id'";
         $query = mysqli_query($conn, $sql) or die($sql);
 
-        $response = array(
+        $response = [
             'action_type' => $action_type,
             'message' => 'Data Berhasil diubah'
-        );
+        ];
 
         echo json_encode($response);
     }

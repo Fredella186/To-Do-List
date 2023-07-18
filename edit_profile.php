@@ -38,29 +38,29 @@ $result = mysqli_fetch_array($query);
     </form>
     </div>
     <div class="profile" id="profile">
-        <p class="bold white margin">Username</p><br>
-        <input type="text" name="username" id="username" value="<?php echo $result['username'] ?>" class="white" readonly>
+        <p class="bold white margin" style="margin-right: 100px; margin-top: 50px;">Username</p><br>
+        <input type="text" name="username" id="username" value="<?php echo $result['username'] ?>" class="white" readonly style="margin-top: 50px;">
     </div>
     <div class="profile" id="profile">
-        <p class="bold white margin">Fullname</p>
+        <p class="bold white margin" style="margin-right: 110px;">Fullname</p>
         <input type="text" name="fullname" id="fullname" value="<?php echo $result['fullname'] ?>" class="white">
     </div>
     <div class="profile" id="profile">
-        <p class="bold white">Email</p>
+        <p class="bold white" style="margin-right: 138px;">Email</p>
         <br>
         <input type="email" name="email" id="email" value="<?php echo $result['email'] ?>" class="white">
         <br>
     </div>
     <div class="profile" id="profile">
-        <p class="bold white">Old Password</p>
+        <p class="bold white" style="margin-right: 78px;">Old Password</p>
         <input type="password" name="old_password" id="old_password" class="white">
     </div>
     <div class="profile" id="profile">
-        <p class="bold white">New Password</p>
+        <p class="bold white" style="margin-right: 73px;">New Password</p>
         <input type="password" name="new_password" id="new_password" class="white">
     </div>
     <div class="profile" id="profile">
-        <p class="bold white">Your Pet</p>
+        <p class="bold white" style="margin-right: 120px;">Your Pet</p>
         <select id="pet_id" name="pet_id">
             <option value="">Select Your Pet</option>
             <?php
@@ -72,7 +72,7 @@ $result = mysqli_fetch_array($query);
             ?>
         </select>
     </div>
-    <button name="save_profile" id="save_profile" onclick="save_profile()">Save</button>
+    <button name="save_profile" id="save_profile" onclick="save_profile()" style="margin-top: 30px;">Save</button>
 </div>
 </body>
 <script src="./assets/js/jquery-3.7.0.js"></script>
