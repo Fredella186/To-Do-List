@@ -60,12 +60,17 @@ else if ($act == "total_score") {
     }
 }
 else if ($act == "pet_name") {
+    $sql = "SELECT pet_id FROm tb_user WHERE id = '$user_id'";
+    $query = mysqli_query($conn, $sql);
+    $result = mysqli_fetch_array($query);
+
+    $pet_id = $result['pet_id'];
     $sql = "UPDATE tb_user
     SET current_pet_phase = (
         SELECT tb_phase.id
         FROM tb_phase
         LEFT JOIN tb_pet ON tb_phase.pet_id = tb_pet.id
-        WHERE tb_user.xp >= tb_phase.min_xp AND tb_user.xp <= tb_phase.max_xp
+        WHERE tb_user.xp >= tb_phase.min_xp AND tb_user.xp <= tb_phase.max_xp AND pet_id = $pet_id
         LIMIT 1     
     )
     WHERE id = '$user_id'";
@@ -268,7 +273,8 @@ else if($act == "loading"){
                 <input type="checkbox" id="undone<?php echo $task_id; ?>" onclick="check_task(<?php echo $task_id; ?>)"/>
             </div>
             <button type="button" id="edit_undone<?php echo $task_id; ?>" onclick="delete_task(<?php echo $task_id; ?>, 1)" name="delete">Delete</button>
-            <button type="button" id="edit_undone<?php echo $task_id; ?>" class="button_edit" value="Edit" onclick="edit_task(<?php echo $task_id; ?>)">Edit</button>
+            <button type="button" id="edit_undone<?php echo $task_id; ?>" class="button_edit" value="Edit" onclick="window.location.href='add_task.php?edit_task=<?php echo $task_id; ?>'">Edit</button>
+
             
         </div>
 <?php

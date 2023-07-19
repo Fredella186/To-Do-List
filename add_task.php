@@ -69,15 +69,14 @@ include "config/connection.php";
                 <div class="task_reminder">
                     <div class="date_time">
                         <p class="text4 white bold">Reminder</p>
-                        <select name="reminder_id" id="reminder_id">
-                            <?php
-                            $query = "SELECT id, reminder_time FROM tb_reminder";
-                            $result = mysqli_query($conn, $query);
-                            while ($row = mysqli_fetch_assoc($result)) {
-                                echo '<option value="' . $row['id'] . '">' . $row['reminder_time'] . '</option>';
-                            }
-                            ?>   
-                        </select>
+                        <div class="reminder_number_form">
+                            <input class="reminder_number" id="reminder_number" name="reminder_number" type="number">
+                            <select name="reminder_time"  id="reminder_time">
+                                <option value="minute" default selected="selected">Minute</option>
+                                <option value="hour">Hour</option>
+                                <option value="day">Day</option>
+                            </select>
+                        </div>
                     </div>
                     <br>
                     <input type="submit" class="text4 white" onclick="save_task(this.value)" id="tambah" name="tambah" value="tambah">Add 
