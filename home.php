@@ -87,6 +87,9 @@ $updated_profile_img = $result['profile_img'];
             pet_picture();
             pet_name();
         });
+        setTimeout(function(){
+        location.reload(true);
+        }, 60000);
     </script>
 </body>
 </html>
