@@ -132,7 +132,7 @@ else if( $act == "delete" ){
     $sql = "delete from tb_task where id='$id'";
     $query = mysqli_query($conn, $sql);
 }
-if ($act == "saveTask") {
+else if ($act == "saveTask") {
     $task_name = $_POST['task_name'];
     $task_date = $_POST['task_date'];
     $task_desc = $_POST['task_desc'];
@@ -143,6 +143,7 @@ if ($act == "saveTask") {
     $reminder_id = $_POST['reminder_id'];
     $reminder_value = $_POST['reminder_value'];
     $reminder_unit = $_POST['reminder_unit'];
+    $collaborator = $_POST['collaborator'];
 
     // Insert the task into the database
     $sql_insert = "INSERT INTO tb_task (task_name, task_date, task_desc, task_time, priority_id, category_id, user_id, status_id) 
@@ -202,9 +203,35 @@ if ($act == "saveTask") {
             echo "Reminder time has already passed.";
         }
     }
+    if ($collaborator != "") {
+        if (is_array($collaborator)) {
+            // Hitung Array
+            $arrayCollaboratorLength = count($collaborator);
+
+            // Mengambil Id task terakhir
+            $sqlGetTaskId = "SELECT id FROM tb_task ORDER BY id DESC LIMIT 1";
+            $queryGetTaskId = mysqli_query($conn, $sqlGetTaskId);
+            $resultGetTaskId = mysqli_fetch_array($queryGetTaskId);
+            $task_id = $resultGetTaskId['id'];
+
+            for ($i = 0; $i < $arrayCollaboratorLength; $i++) {
+
+                $sqlCheckProfile = "SELECT id, username FROM tb_user WHERE id = '$collaborator[$i]'";
+                $queryCheckProfile = mysqli_query($conn, $sqlCheckProfile);
+                $resultCheckProfile = mysqli_fetch_array($queryCheckProfile);
+                $username = $resultCheckProfile['username'];
+                $collaborator_user_id = $resultCheckProfile['id'];
+
+                // Menambahkan data ke tabel kolaborator berdasarkan id
+
+                $sqlCollaborator = "INSERT INTO tb_collaborator( task_id, collabolator_user_id) VALUES('$task_id', '$collaborator_user_id')";
+                mysqli_query($conn, $sqlCollaborator);
+            }
+        }
+    }
 } elseif ($act == "checkReminder") {
     // Query to check for reminders
-    $sql_check_reminder = "SELECT * FROM tb_reminder WHERE reminder_time <= NOW()";
+    $sql_check_reminder = "SELECT * FROM tb_reminder WHERE reminder_time >= NOW() and reminder_date >= NOW()";
     $result_check_reminder = mysqli_query($conn, $sql_check_reminder);
 
     if (!$result_check_reminder) {
@@ -368,11 +395,14 @@ else if($act == "complete"){
             </div>
             <button type="button" onclick="delete_task(<?php echo $task_id; ?>)" name="delete">Delete</button>
         </div>
-<?php
+        <?php
     }
 }
 ?>
+<!--untuk menambahjan pet-->
 
+<?php
+?>
 
 
 

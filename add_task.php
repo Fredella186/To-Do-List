@@ -79,6 +79,26 @@ include "config/connection.php";
                             </select>
                         </div>
                     </div>
+                    <div class="task_collabolator">
+                        <p class="text4 white bold">Add Collabolator</p>
+                        <div class="customSelect">
+                        <select class="js-example-basic-multiple" name="collaborator[]" multiple="multiple" id="collaborator">
+                        <option class="option" value="" selected disabled>Add collaborator</option>
+                        <?php
+                        $user_id = $_SESSION['id'];
+                        $sqlCollab = "SELECT id, username FROM tb_user WHERE id != '$user_id'";
+                        $queryCollab = mysqli_query($conn, $sqlCollab);
+                        while ($resultCollab = mysqli_fetch_array($queryCollab)) {
+                            ?>
+                            <option value="<?php echo $resultCollab['id'] ?>"><?php echo $resultCollab['username'] ?>
+                            </option>
+                            <?php
+                        }
+                        ?>
+                    </select>
+                </div>
+
+                    </div>
                     <br>
                     <input type="submit" class="text4 white" onclick="save_task(this.value)" id="tambah" name="tambah" value="tambah">Add 
                 </div>

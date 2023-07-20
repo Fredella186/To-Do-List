@@ -201,6 +201,7 @@ function checkReminder() {
             task_id: $("#task_id").val(),
             reminder_value: reminder_value,
             reminder_unit: reminder_unit,
+            collaborator: $(".js-example-basic-multiple").val(), // Menambahkan data kolaborator ke dalam AJAX request
             act: "saveTask",
           },
           success: function (response) {
