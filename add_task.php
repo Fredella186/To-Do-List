@@ -22,7 +22,7 @@ include "config/connection.php";
             
             <div class="close_add white"><a href="home.php">&times;</a></div>
                 <p class="text4 white " id="title_task">Add New Task</p>
-                <td><input type="hidden" name="task_id" class="id form-control" id="task_   id" value=""></td>
+                <td><input type="hidden" name="task_id" class="id form-control" id="task_id" value=""></td>
                 <div class="task_insert">
                     <p class="text4 white bold" id="title_task"></p>
                     <input type="text" id="task_name" name="task_name" class="white" value="">
@@ -70,11 +70,12 @@ include "config/connection.php";
                     <div class="date_time">
                         <p class="text4 white bold">Reminder</p>
                         <div class="reminder_number_form">
-                            <input class="reminder_number" id="reminder_number" name="reminder_number" type="number">
-                            <select name="reminder_time"  id="reminder_time">
-                                <option value="minute" default selected="selected">Minute</option>
-                                <option value="hour">Hour</option>
-                                <option value="day">Day</option>
+                            <audio id="reminderSound" src="assets/audio/ringtone.mp3" preload="auto" hidden></audio>
+                            <input class="reminder_value" id="reminder_value" name="reminder_value" type="number">
+                            <select name="reminder_unit" id="reminder_unit">
+                                <option value="minutes" default selected="selected">Minute</option>
+                                <option value="hours">Hour</option>
+                                <option value="days">Day</option>
                             </select>
                         </div>
                     </div>

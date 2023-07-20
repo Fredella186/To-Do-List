@@ -132,7 +132,7 @@ else if( $act == "delete" ){
     $sql = "delete from tb_task where id='$id'";
     $query = mysqli_query($conn, $sql);
 }
-else if ($act == "saveTask") {
+if ($act == "saveTask") {
     $task_name = $_POST['task_name'];
     $task_date = $_POST['task_date'];
     $task_desc = $_POST['task_desc'];
@@ -141,25 +141,83 @@ else if ($act == "saveTask") {
     $user_id = $_SESSION['id'];
     $category_id = $_POST['category_id'];
     $reminder_id = $_POST['reminder_id'];
+    $reminder_value = $_POST['reminder_value'];
+    $reminder_unit = $_POST['reminder_unit'];
 
+    // Insert the task into the database
+    $sql_insert = "INSERT INTO tb_task (task_name, task_date, task_desc, task_time, priority_id, category_id, user_id, status_id) 
+                    VALUES ('$task_name','$task_date','$task_desc','$task_time','$priority_id','$category_id','$user_id','1')";
 
-    $sql_insert = "INSERT INTO tb_task (task_name, task_date, task_desc, task_time, priority_id,  category_id, reminder_id, user_id, status_id) 
-     VALUES ('$task_name','$task_date','$task_desc','$task_time','$priority_id','$category_id','$reminder_id','$user_id','1')";
+    $run_query_check = mysqli_query($conn, $sql_insert);
 
-
-$run_query_check = mysqli_query($conn, $sql_insert) or die($sql_insert) ;
     if (!$run_query_check) {
         die('Query error: ' . mysqli_error($conn));
     } else {
-        ?>
-        <script>
-            alert("New Task Succeed");
-        </script>
-        <?php
-        header("Refresh:0.1; url=home.php");
+        // Calculate the reminder time
+        $timestamp = strtotime("$task_date $task_time");
+        $reminder_time = 60; // Default reminder time is 1 minute (60 seconds)
+
+        if ($reminder_unit === 'minutes') {
+            $reminder_time *= $reminder_value;
+        } elseif ($reminder_unit === 'hours') {
+            $reminder_time *= $reminder_value * 60; // Convert hours to minutes
+        } elseif ($reminder_unit === 'days') {
+            $reminder_time *= $reminder_value * 60 * 24; // Convert days to minutes
+        }
+
+        $reminder_timestamp = $timestamp - $reminder_time;
+        $reminder_date = date("Y-m-d", $reminder_timestamp);
+        $reminder_time = date("H:i", $reminder_timestamp);
+
+        // Get the task_id of the inserted task
+        $sql_get_task_id = "SELECT id FROM tb_task WHERE task_name='$task_name' AND user_id='$user_id'";
+        $result_get_task_id = mysqli_query($conn, $sql_get_task_id);
+
+        if (!$result_get_task_id) {
+            die('Query error: ' . mysqli_error($conn));
+        }
+
+        $row = mysqli_fetch_assoc($result_get_task_id);
+        $task_id = $row['id'];
+
+        // Save the reminder
+        $sql_insert_reminder = "INSERT INTO tb_reminder (task_id, reminder_time, reminder_date) 
+                               VALUES ('$task_id', '$reminder_time', '$reminder_date')";
+
+        $run_query_reminder = mysqli_query($conn, $sql_insert_reminder);
+
+        if (!$run_query_reminder) {
+            die('Query error: ' . mysqli_error($conn));
+        }
+
+        // Calculate the time remaining for the reminder
+        $current_timestamp = time();
+        $time_remaining = $reminder_timestamp - $current_timestamp;
+
+        if ($time_remaining > 0) {
+            // Send the time remaining to JavaScript (Ajax response)
+            echo $time_remaining;
+        } else {
+            // If the reminder time has already passed, send a message to JavaScript
+            echo "Reminder time has already passed.";
+        }
+    }
+} elseif ($act == "checkReminder") {
+    // Query to check for reminders
+    $sql_check_reminder = "SELECT * FROM tb_reminder WHERE reminder_time <= NOW()";
+    $result_check_reminder = mysqli_query($conn, $sql_check_reminder);
+
+    if (!$result_check_reminder) {
+        die('Query error: ' . mysqli_error($conn));
     }
 
-} else if ($act == "editTask") {
+    if (mysqli_num_rows($result_check_reminder) > 0) {
+        // There is a reminder that matches the current time
+        echo "Reminder set";
+    } else {
+        echo "Reminder time has already passed.";
+    }
+} elseif ($act == "editTask") {
     $sql = "SELECT * FROM tb_task WHERE id = '$id'";
     $query = mysqli_query($conn, $sql);
     $result = mysqli_fetch_array($query);
@@ -172,7 +230,6 @@ $run_query_check = mysqli_query($conn, $sql_insert) or die($sql_insert) ;
     $category_id = $result['category_id'];
     $reminder_id = $result['reminder_id'];
     echo "|" . $task_id ."|" . $task_name . "|" . $task_desc . "|" . $category_id . "|" . $priority_id . "|" . $task_date . "|" . $task_time . "|" . $task_id . "|" . $reminder_id;
-
 } else if ($act == "updateTask") {
     $task_name = $_POST['task_name'];
     $task_date = $_POST['task_date'];

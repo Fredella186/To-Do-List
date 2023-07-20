@@ -86,6 +86,7 @@ $updated_profile_img = $result['profile_img'];
             total_score();
             pet_picture();
             pet_name();
+            checkReminder();
         });
         setTimeout(function(){
         location.reload(true);

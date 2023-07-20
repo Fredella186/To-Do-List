@@ -155,32 +155,76 @@ function add_task(){
 
 }
 
-function save_task(act_button) {
-  if(act_button == "tambah"){
-  $.ajax({
-    url: "sv_task.php",
-    method: "POST",
-    data: {
-      task_name: $("#task_name").val(),
-      task_desc: $("#task_desc").val(),
-      category_id: $("#category_id").val(),
-      priority_id: $("#priority_id").val(),
-      task_date: $("#task_date").val(),
-      task_time: $("#task_time").val(),
-      reminder_id: $("#reminder_id").val(),
-      act: "saveTask",
-    },
-    success: function () {
-      alert("Data berhasil disimpan!");
-      get_data();
-      completed_task();
-      $("#divAdd").css("visibility", "hidden");
-    },
-  });
-  }else{
-    update_task();
-  }
-}
+function checkReminder() {
+        $.ajax({
+            url: "sv_task.php",
+            method: "POST",
+            data: {
+                act: "checkReminder",
+            },
+            success: function (response) {
+                if (response.trim() === "Reminder set") {
+                    // Play the ringtone when the reminder time comes
+                    var audio = new Audio('assets/audio/ringtone.mp3');
+                    audio.play();
+                    alert("Reminder is set");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error checking reminders: " + error);
+            }
+        });
+    }
+
+    function save_task(act_button) {
+      var reminder_value = $("#reminder_value").val();
+      var reminder_unit = $("#reminder_unit").val();
+    
+      // Validate reminder value and unit
+      if (reminder_value === "" || isNaN(reminder_value) || reminder_unit === "") {
+        alert("Please enter a valid reminder value and unit.");
+        return;
+      }
+    
+      if (act_button == "tambah") {
+        $.ajax({
+          url: "sv_task.php",
+          method: "POST",
+          data: {
+            task_name: $("#task_name").val(),
+            task_desc: $("#task_desc").val(),
+            category_id: $("#category_id").val(),
+            priority_id: $("#priority_id").val(),
+            task_date: $("#task_date").val(),
+            task_time: $("#task_time").val(),
+            reminder_id: $("#reminder_id").val(),
+            task_id: $("#task_id").val(),
+            reminder_value: reminder_value,
+            reminder_unit: reminder_unit,
+            act: "saveTask",
+          },
+          success: function (response) {
+            // Display success message for saving task
+            alert("Data successfully saved!");
+    
+            // Check reminders after successfully saving the task
+            //checkReminder();
+          },
+          error: function (xhr, status, error) {
+            console.error("Error saving task: " + error);
+          },
+        });
+      } else {
+        // Update task function (if needed)
+        update_task();
+      }
+    }
+    
+
+    // Check reminders every 10 seconds (adjust the interval as needed)
+   
+
+
 
   //filter
 
@@ -215,8 +259,7 @@ function pet_picture(){
     },
     success: function(result){
       $("#pet_picture").html(result);
-      pet_picture();
-      pet_name();
+
     }
   });
 }
