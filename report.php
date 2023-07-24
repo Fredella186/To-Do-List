@@ -13,10 +13,12 @@ include "config/connection.php";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/style.css">
     <title>Report</title>
 </head>
 <body>
     <div class="filter_body">
+    <a href="home.php">&times;</a>
         <div class="profile">
                     <div class="profile_picture">
                         <img  class="profile_img" src=" ./assets/picture/<?php echo $profile_img; ?>" alt="">

@@ -29,7 +29,7 @@ else if ($act == "completed_score") {
     if ($query_update) {
         ?>
         <div class="score_bar">
-            <p class="text4 white bold"><?php echo $total_score; ?>XP</p>
+            <p class="text4 white bold"><?php echo $total_score; ?>Task Completed</p>
         </div>
         <?php
     } else {
@@ -71,7 +71,7 @@ else if ($act == "pet_name") {
         FROM tb_phase
         LEFT JOIN tb_pet ON tb_phase.pet_id = tb_pet.id
         WHERE tb_user.xp >= tb_phase.min_xp AND tb_user.xp <= tb_phase.max_xp AND pet_id = $pet_id
-        LIMIT 1     
+        LIMIT 1    
     )
     WHERE id = '$user_id'";
 
@@ -187,21 +187,7 @@ else if ($act == "saveTask") {
 
         $run_query_reminder = mysqli_query($conn, $sql_insert_reminder);
 
-        if (!$run_query_reminder) {
-            die('Query error: ' . mysqli_error($conn));
-        }
-
-        // Calculate the time remaining for the reminder
-        $current_timestamp = time();
-        $time_remaining = $reminder_timestamp - $current_timestamp;
-
-        if ($time_remaining > 0) {
-            // Send the time remaining to JavaScript (Ajax response)
-            echo $time_remaining;
-        } else {
-            // If the reminder time has already passed, send a message to JavaScript
-            echo "Reminder time has already passed.";
-        }
+        
     }
     if ($collaborator != "") {
         if (is_array($collaborator)) {
@@ -224,27 +210,57 @@ else if ($act == "saveTask") {
 
                 // Menambahkan data ke tabel kolaborator berdasarkan id
 
-                $sqlCollaborator = "INSERT INTO tb_collaborator( task_id, collabolator_user_id) VALUES('$task_id', '$collaborator_user_id')";
-                mysqli_query($conn, $sqlCollaborator);
+                 $sqlCollaborator = "INSERT INTO tb_collaborator( task_id, collabolator_user_id,added_by ) VALUES('$task_id', '$collaborator_user_id','$user_id')";
+                 mysqli_query($conn, $sqlCollaborator);
+
+                 //menampilkan task kesetiap kolabolator
+
+                 $sqlShowTask = "select task_id from tb_collaborator where collabolator_user_id = '$collaborator[$i]'";
+
             }
         }
     }
-} elseif ($act == "checkReminder") {
-    // Query to check for reminders
-    $sql_check_reminder = "SELECT * FROM tb_reminder WHERE reminder_time >= NOW() and reminder_date >= NOW()";
-    $result_check_reminder = mysqli_query($conn, $sql_check_reminder);
+} else if ($act == "checkReminder") {
+    // Menggunakan timezone Asia Jakarta
+    date_default_timezone_set('Asia/Jakarta');
 
-    if (!$result_check_reminder) {
+    // Mendapatkan tanggal dan waktu hari ini
+    $currentDate = date('Y-m-d');
+    $currentTime = date('H:i:00', time());
+
+    // Mendapatkan seluruh task yang memiliki reminder hari ini
+    $sqlGetReminder = "SELECT tb_reminder.*, tb_task.* FROM tb_reminder LEFT JOIN tb_task ON tb_reminder.task_id = tb_task.id WHERE reminder_date = '$currentDate' AND reminder_time = '$currentTime' AND tb_task.user_id = '$user_id' AND tb_task.status_id = 1";
+
+    // Execute the query and check for errors
+    $resultGetReminder = mysqli_query($conn, $sqlGetReminder);
+
+    if (!$resultGetReminder) {
         die('Query error: ' . mysqli_error($conn));
+        
     }
 
-    if (mysqli_num_rows($result_check_reminder) > 0) {
+    // Check if there is a reminder that matches the current time
+    if (mysqli_num_rows($resultGetReminder) > 0) {
         // There is a reminder that matches the current time
-        echo "Reminder set";
+        ?>
+        <div class="reminder_title">
+            <p>Reminder Set</p>
+            <audio autoplay>
+            <source src="assets/audio/ringtone.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <script>
+            function playRingtone() {
+            var ringtone = document.getElementById('reminderSound');
+            reminderSound.play();
+            }
+        </script>
+        <?php
     } else {
         echo "Reminder time has already passed.";
     }
-} elseif ($act == "editTask") {
+}
+ elseif ($act == "editTask") {
     $sql = "SELECT * FROM tb_task WHERE id = '$id'";
     $query = mysqli_query($conn, $sql);
     $result = mysqli_fetch_array($query);
@@ -319,19 +335,23 @@ else if ($act == "filters") {
                 <img src="assets/picture/<?php echo $category_img; ?>">
             </div>
             <div class="task_desc">
-                <p class="text1 black bold"><?php echo $task_title; ?></p>
+                <p class="text1 white    bold"><?php echo $task_title; ?></p>
                 <div class="task_time">
                     <img src="assets/picture/time.png">
-                    <p class="text6 black regular"><?php echo $task_deadline; ?></p>
+                    <p class="text6 white regular"><?php echo $task_deadline; ?></p>
                 </div>
-                <p class="text2 black regular"><?php echo $task_desc; ?></p>
+                <p class="text2 white regular"><?php echo $task_desc; ?></p>
             </div>
         </div>
         <?php
     }
 }
 else if($act == "loading"){
-    $sql = "select t.*, c.category_name, c.category_img from tb_task t left join tb_category c on t.category_id = c.id where user_id='$user_id' and status_id=1 ";
+    // Load data from database dan juga menampilkan task yang di setiap kolaborator
+    $sql = "SELECT t.*, c.category_name, c.category_img FROM tb_task t
+    LEFT JOIN tb_category c ON t.category_id = c.id
+    left join tb_collaborator a on t.id = a.task_id
+    WHERE (user_id='$user_id' OR collabolator_user_id='$user_id') AND status_id=1";
     $query = mysqli_query($conn, $sql);
     while ($result = mysqli_fetch_array($query)) {
         $task_id = $result['id'];
@@ -357,7 +377,8 @@ else if($act == "loading"){
                 <input type="checkbox" id="undone<?php echo $task_id; ?>" onclick="check_task(<?php echo $task_id; ?>)"/>
             </div>
             <button type="button" id="edit_undone<?php echo $task_id; ?>" onclick="delete_task(<?php echo $task_id; ?>, 1)" name="delete">Delete</button>
-            <button type="button" id="edit_undone<?php echo $task_id; ?>" class="button_edit" value="Edit" onclick="window.location.href='add_task.php?edit_task=<?php echo $task_id; ?>'">Edit</button>
+            <!-- <button type="button" id="edit_undone<?php echo $task_id; ?>" class="button_edit" value="Edit" onclick="edit_task(<?php echo $task_id; ?>)">Edit</button> -->
+            <button type="button" class="button_edit" value="Edit" onclick="edit_task(<?php echo $task_id; ?>)">Edit</button>
 
             
         </div>

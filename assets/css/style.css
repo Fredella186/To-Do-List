@@ -207,17 +207,24 @@ input[type="submit"]{
     margin-left:450px ;
 }
 
+.score{
+    border: 1px solid white;
+    margin-right: 100px;
+    padding-left: 20px;
+    border-radius: 10px;
+}
+
 
 
 /*style report*/
 
 .filter_body{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
 .filter_date_main{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 }
 .filter_button{
     width: 420px;
@@ -226,13 +233,27 @@ input[type="submit"]{
     color:black;
     font-family: bold;
     font-size: 24px;
+    margin-bottom: 40px;
 }
 
+input[type="date"]{
+    width: 210px;
+    height: 48px;
+    border-radius: 10px;
+}
     
 .task_check {
     display: flex;
     flex-direction: column;
 
+}
+
+#filter_result{
+    border: 1px solid white;
+    margin-right: 100px;
+    padding-left: 20px;
+    border-radius: 10px;
+    
 }
 
 
@@ -250,3 +271,19 @@ input[type="submit"]{
 .your_task{
     margin-right: 300px;
 }
+#reminderResult{
+    position: absolute;
+    top: 40px;
+    left: 20px;
+
+    padding: 30px;
+    background-color: #808080;
+
+  }
+
+
+
+  .reminder-title > p{
+    font-size:24px;
+    color: white;
+  }

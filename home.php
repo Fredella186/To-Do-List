@@ -74,21 +74,17 @@ $updated_profile_img = $result['profile_img'];
             <p class="white">loading......</p>
         </div>
     </div>
+    
+    <?php include "add_task.php"; ?>
+    
+    <div id="reminderResult">
+
+    </div>
 
     <!-- add -->
     <script src="assets/js/script.js"></script>
     <script src="assets/js/jquery-3.7.0.js"></script>
     <script>
-        function stopAudio() {
-            var audio = new Audio('assets/audio/ringtone.mp3');
-            audio.pause();
-            audio.currentTime = 0;
-        }
-
-        // Memanggil fungsi stopAudio() sebelum halaman direload
-        window.addEventListener("beforeunload", function (event) {
-            stopAudio();
-        });
         $(document).ready(function(){
             get_data();
             completed_task();
@@ -97,11 +93,12 @@ $updated_profile_img = $result['profile_img'];
             pet_picture();
             pet_name();
             checkReminder();
-            $('js-example-basic-multiple').select2();
+            // $('js-example-basic-multiple').select2();
         });
         setTimeout(function(){
-        location.reload(true);
+            location.reload(true);
         }, 60000);
-    </script>
+        </script>
+        
 </body>
 </html>

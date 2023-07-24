@@ -66,7 +66,7 @@ include "config/connection.php";
                 </div>
             </div>
             <div class="rigth">
-                <div class="task_reminder">
+                <div class="task_reminder" id="task_reminder">
                     <div class="date_time">
                         <p class="text4 white bold">Reminder</p>
                         <div class="reminder_number_form">
@@ -107,7 +107,9 @@ include "config/connection.php";
         </div>
         </div>
     </div>
+                        
 </body>
 <script src="./assets/js/jquery-3.7.0.js"></script>
 <script src="./assets/js/script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js" defer></script>
 </html>

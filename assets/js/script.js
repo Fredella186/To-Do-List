@@ -83,12 +83,12 @@ function delete_task(id, type){
 }
 
 
-function edit_task(id) {
+function edit_task(task_id) {
   $.ajax({
     url: "sv_task.php",
     method: "POST",
     data: {
-      id: id,
+      id: task_id,
       act: "editTask",
     },
     success: function (result) {
@@ -103,6 +103,8 @@ function edit_task(id) {
       $("#priority_id").val(data[5]);
       $("#task_date").val(data[6]);
       $("#task_time").val(data[7]);
+
+      //window.location.href = 'add_task.php?edit_task=' + task_id;
       
       // id = $("#id").val(data[7]);
 
@@ -156,25 +158,22 @@ function add_task(){
 }
 
 function checkReminder() {
-        $.ajax({
-            url: "sv_task.php",
-            method: "POST",
-            data: {
-                act: "checkReminder",
-            },
-            success: function (response) {
-                if (response.trim() === "Reminder set") {
-                    // Play the ringtone when the reminder time comes
-                    var audio = new Audio('assets/audio/ringtone.mp3');
-                    audio.play();
-                    alert("Reminder is set");
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("Error checking reminders: " + error);
-            }
-        });
-    }
+  const tittle = "Reminder";
+  const msg = "You have a task reminder!";
+  const song ="assets/audio/ringtone.mp3";
+  $.ajax({
+      url: "sv_task.php",
+      method: "POST",
+      data: {
+          act: "checkReminder",
+      },
+      success: function (result) {
+        // Check the actual response from the server
+        $('#reminderResult').html(result);
+
+      }
+  });
+}
 
     function save_task(act_button) {
       var reminder_value = $("#reminder_value").val();
@@ -209,7 +208,7 @@ function checkReminder() {
             alert("Data successfully saved!");
     
             // Check reminders after successfully saving the task
-            //checkReminder();
+            checkReminder();
           },
           error: function (xhr, status, error) {
             console.error("Error saving task: " + error);
