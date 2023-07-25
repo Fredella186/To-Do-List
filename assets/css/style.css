@@ -18,7 +18,7 @@ body{
     color: linear-gradient(to right, #fc5c7d, #6a82fb);
 }
 .black{
-    color:blacks;
+    color:black;
 }
 .white{
     color:white;
@@ -241,7 +241,16 @@ input[type="date"]{
     height: 48px;
     border-radius: 10px;
 }
-    
+input[type="time"]{
+    width: 210px;
+    height: 48px;
+    border-radius: 10px;
+}
+input[type="number"]{
+    width: 210px;
+    height: 48px;
+    border-radius: 10px;
+}   
 .task_check {
     display: flex;
     flex-direction: column;
@@ -275,15 +284,13 @@ input[type="date"]{
     position: absolute;
     top: 40px;
     left: 20px;
-
     padding: 30px;
-    background-color: #808080;
-
+    background-color: pink;
+    
   }
 
 
-
-  .reminder-title > p{
+  .reminder_title > p{
     font-size:24px;
     color: white;
   }

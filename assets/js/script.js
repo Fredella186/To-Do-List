@@ -93,6 +93,7 @@ function edit_task(task_id) {
     },
     success: function (result) {
       $("#divAdd").css("visibility", "visible");
+      $("#divAdd").show();
       $("#title_task").html("Edit Task");
       $("#tambah").val("Edit");
       var data = result.split("|");
@@ -106,19 +107,16 @@ function edit_task(task_id) {
 
       //window.location.href = 'add_task.php?edit_task=' + task_id;
       
-      // id = $("#id").val(data[7]);
-
-      
+      // id = $("#id").val(data[7])s
       // $('#tambah').unbind('click');
       // $('#tambah').on("click",function(){
       //   update_task();
-      // });
+      // });     
     },
   });
 }
 
 function update_task() {
-  // console.log(document.getElementById("edit_task_time").value);
   $.ajax({
     url: "sv_task.php",
     method: "POST",
@@ -138,13 +136,16 @@ function update_task() {
       completed_task();
 
       $("#divAdd").css("visibility", "hidden");
+      $("#divAdd").css("display", "block");
       window.scroll(0,0);
     },
   });
 }
 
-function add_task(){
-  modal.style.display = "block";
+function add_task(){  
+  $("#divAdd").css("visibility", "visible");
+  $("#divAdd").show();
+      $("#title_task").html("Edit Task");
       $("#title_task").html("Add Task");
       $("#id").val("");
       $("#task_name").val("");
@@ -158,9 +159,6 @@ function add_task(){
 }
 
 function checkReminder() {
-  const tittle = "Reminder";
-  const msg = "You have a task reminder!";
-  const song ="assets/audio/ringtone.mp3";
   $.ajax({
       url: "sv_task.php",
       method: "POST",

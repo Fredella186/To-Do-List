@@ -129,6 +129,10 @@ else if ($act == "pet_picture") {
 
 
 else if( $act == "delete" ){
+    $sqlCollabolator = "delete from tb_collaborator where task_id='$id'";
+    $queryCollabolator = mysqli_query($conn, $sqlCollabolator);
+    $sqlReminder = "delete from tb_reminder where task_id='$id'";
+    $queryReminder = mysqli_query($conn, $sqlReminder);
     $sql = "delete from tb_task where id='$id'";
     $query = mysqli_query($conn, $sql);
 }
@@ -233,6 +237,9 @@ else if ($act == "saveTask") {
 
     // Execute the query and check for errors
     $resultGetReminder = mysqli_query($conn, $sqlGetReminder);
+    $queryGetReminder = mysqli_fetch_array($resultGetReminder);
+    $task_reminder = $queryGetReminder['task_name'];
+    $task_time_reminder = $queryGetReminder['task_time'];
 
     if (!$resultGetReminder) {
         die('Query error: ' . mysqli_error($conn));
@@ -241,24 +248,20 @@ else if ($act == "saveTask") {
 
     // Check if there is a reminder that matches the current time
     if (mysqli_num_rows($resultGetReminder) > 0) {
+
         // There is a reminder that matches the current time
         ?>
         <div class="reminder_title">
-            <p>Reminder Set</p>
+            <a href="home.php">&times;</a>
+            <center><p><?php echo $task_reminder?></p></center>
+            <?php echo $task_time_reminder?> </p>
             <audio autoplay>
             <source src="assets/audio/ringtone.mp3" type="audio/mpeg">
             </audio>
-        </div>
-        <script>
-            function playRingtone() {
-            var ringtone = document.getElementById('reminderSound');
-            reminderSound.play();
-            }
-        </script>
+        </div>  
         <?php
-    } else {
-        echo "Reminder time has already passed.";
-    }
+        exit;
+    } 
 }
  elseif ($act == "editTask") {
     $sql = "SELECT * FROM tb_task WHERE id = '$id'";
@@ -273,7 +276,12 @@ else if ($act == "saveTask") {
     $category_id = $result['category_id'];
     $reminder_id = $result['reminder_id'];
     echo "|" . $task_id ."|" . $task_name . "|" . $task_desc . "|" . $category_id . "|" . $priority_id . "|" . $task_date . "|" . $task_time . "|" . $task_id . "|" . $reminder_id;
-} else if ($act == "updateTask") {
+} 
+else if ($act == "updateTask") {
+    $sql = "SELECT * FROM tb_task WHERE id = '$id'";
+    $query = mysqli_query($conn, $sql);
+    $result = mysqli_fetch_array($query);
+    $task_id = $result['id'];
     $task_name = $_POST['task_name'];
     $task_date = $_POST['task_date'];
     $task_desc = $_POST['task_desc'];
@@ -282,23 +290,52 @@ else if ($act == "saveTask") {
     $user_id = $_SESSION['id'];
     $category_id = $_POST['category_id'];
     $reminder_id = $_POST['reminder_id'];
-    $task_id = $_POST['task_id'];
 
-    $sql_update = "update tb_task set task_name= '$task_name', task_date= '$task_date', task_desc='$task_desc', task_time= '$task_time', priority_id= '$priority_id', category_id= '$category_id' ,reminder_id= '$reminder_id', status_id=1 where id='$task_id'";
-    
+    $sql_update = "update tb_task set task_name= '$task_name', task_date= '$task_date', task_desc='$task_desc', task_time= '$task_time', priority_id= '$priority_id', category_id= '$category_id' ,status_id=1, user_id = '$user_id' where tb_task.id='$task_id'";
+    $run_query_check = mysqli_query($conn, $sql_update);
+        if (!$run_query_check) {
+            die('Query error: ' . mysqli_error($conn));
+        } else {
+            ?>
+            <script>
+                alert("Edit Task Succeed");
+            </script>
+            <?php
+            header("Refresh:0.1; url=home.php");
+        }
+    //update reminder
+    $timestamp = strtotime("$task_date $task_time");
+        $reminder_time = 60; // Default reminder time is 1 minute (60 seconds)
 
-$run_query_check = mysqli_query($conn, $sql_update)  ;
-    if (!$run_query_check) {
-        die('Query error: ' . mysqli_error($conn));
-    } else {
-        ?>
-        <script>
-            alert("Edit Task Succeed");
-        </script>
-        <?php
-        header("Refresh:0.1; url=home.php");
-    }
+        if ($reminder_unit === 'minutes') {
+            $reminder_time *= $reminder_value;
+        } elseif ($reminder_unit === 'hours') {
+            $reminder_time *= $reminder_value * 60; // Convert hours to minutes
+        } elseif ($reminder_unit === 'days') {
+            $reminder_time *= $reminder_value * 60 * 24; // Convert days to minutes
+        }
+
+        $reminder_timestamp = $timestamp - $reminder_time;
+        $reminder_date = date("Y-m-d", $reminder_timestamp);
+        $reminder_time = date("H:i", $reminder_timestamp);
+
+        // Get the task_id of the inserted task
+        $sql_get_task_id = "SELECT id FROM tb_task WHERE task_name='$task_name' AND user_id='$user_id'";
+        $result_get_task_id = mysqli_query($conn, $sql_get_task_id);
+
+        if (!$result_get_task_id) {
+            die('Query error: ' . mysqli_error($conn));
+        }
+
+        $row = mysqli_fetch_assoc($result_get_task_id);
+        $task_id = $row['id'];
+
+        // Save the reminder
+        $sql_insert_reminder = "update tb_reminder set reminder_time = '$reminder_time' , reminder_date = '$reminder_date' where task_id = '$task_id'";
+
+        $run_query_reminder = mysqli_query($conn, $sql_insert_reminder);
 }
+
 /*Filter*/
 else if ($act == "filters") {
     $start_date = $_POST['start_date'];
@@ -387,7 +424,10 @@ else if($act == "loading"){
 }
 
 else if($act == "complete"){
-    $sql = "select t.*, c.category_name, c.category_img from tb_task t left join tb_category c on t.category_id = c.id where user_id='$user_id' and status_id=2";
+    $sql = "SELECT t.*, c.category_name, c.category_img FROM tb_task t
+    LEFT JOIN tb_category c ON t.category_id = c.id
+    left join tb_collaborator a on t.id = a.task_id
+    WHERE (user_id='$user_id' OR collabolator_user_id='$user_id') AND status_id=2";
     $query = mysqli_query($conn, $sql);
     while ($result = mysqli_fetch_array($query)) {
         $task_id = $result['id'];
@@ -420,10 +460,7 @@ else if($act == "complete"){
     }
 }
 ?>
-<!--untuk menambahjan pet-->
 
-<?php
-?>
 
 
 

@@ -56,7 +56,7 @@ $updated_profile_img = $result['profile_img'];
         <div>
             <div class="task_top">
                 <p class="text4 white bold your_task">Your task</p>
-                <a href="add_task.php" ><button style="margin-right: 100px;">Add</button></a>
+                <a href="#addDiv" ><button style="margin-right: 100px;">Add</button></a>
                 <a href="report.php"><button>Filter</button></a>
             </div>
             <div class="task_active_list" id="active_tasks">
@@ -93,11 +93,13 @@ $updated_profile_img = $result['profile_img'];
             pet_picture();
             pet_name();
             checkReminder();
-            // $('js-example-basic-multiple').select2();
         });
+ 
         setTimeout(function(){
             location.reload(true);
         }, 60000);
+        </script>
+        <script>
         </script>
         
 </body>

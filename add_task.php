@@ -16,7 +16,7 @@ include "config/connection.php";
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-<div id="divAdd" class="overlayAdd" ;>
+<div id="divAdd" class="overlayAdd" style=" margin-left:50px; ">
         <div id="wrapper_add_task">
             <div class="left">
             
@@ -72,6 +72,7 @@ include "config/connection.php";
                         <div class="reminder_number_form">
                             <audio id="reminderSound" src="assets/audio/ringtone.mp3" preload="auto" hidden></audio>
                             <input class="reminder_value" id="reminder_value" name="reminder_value" type="number">
+                            <br><br>
                             <select name="reminder_unit" id="reminder_unit">
                                 <option value="minutes" default selected="selected">Minute</option>
                                 <option value="hours">Hour</option>
@@ -112,4 +113,9 @@ include "config/connection.php";
 <script src="./assets/js/jquery-3.7.0.js"></script>
 <script src="./assets/js/script.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js" defer></script>
+<script>
+        $(document).ready(function(){
+             $('.js-example-basic-multiple').select2();
+        });
+        </script>
 </html>
